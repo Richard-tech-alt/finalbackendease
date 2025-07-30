@@ -26,7 +26,7 @@ app.use(cors({
 app.use(express.json());
 
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect("mongodb+srv://patelrajeev10342:T1ej9XOrMzmr1FFe@cluster0.u5hkmz6.mongodb.net/EaseWithBackendNewVps?retryWrites=true&w=majority&appName=Cluster0")
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
