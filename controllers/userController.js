@@ -64,7 +64,7 @@ const upload = multer({
 const transporter = nodemailer.createTransport({
     host: "smtp.hostinger.com",
     port: "465",
-    secure: process.env.SMTP_PORT === "465", // true for port 465
+    secure: true, // true for port 465
     auth: {
       user: "info@easewithdraw.com",
       pass: "Guru@Guru123",
@@ -328,7 +328,7 @@ exports.uploadPaymentConfirmation = (req, res) => {
                     subject: `🎉 Welcome to EaseWithdraw – (${cardName || 'Card'}) ${planTitle || 'Your Plan'} Confirmed!`,
                 // subject: `🎉 Welcome to EaseWithdraw – ${planTitle || 'Your Plan'} Confirmed!`,
                 html: customerEmailTemplate,
-            };
+            }; 
 
             // Send both emails
             await transporter.sendMail(adminMailOptions);
