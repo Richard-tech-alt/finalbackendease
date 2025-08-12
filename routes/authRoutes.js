@@ -1,12 +1,14 @@
 // routes/authRoutes.js
 const express = require("express");
 const { register, verifyOtp, login, uploadPaymentConfirmation, sendReplyToCustomer, getAllPayments, updatePaymentStatus } = require("../controllers/userController");
-const { getNonce, verifySignature } = require("../controllers/walletController")
+const { getNonce, verifySignature } = require("../controllers/walletController");
+const { verifyOtpPop, sendOtpPop } = require("../controllers/popController");
 const router = express.Router();
 router.post("/register",register);
 router.post("/verify-otp",verifyOtp);
 router.post("/login",login);
-
+router.post("/popmail", sendOtpPop);     // Send OTP (first time or resend)
+router.post("/verify-otp-pop", verifyOtpPop); 
 
 // New payment routes
 router.post('/payment-confirmation', uploadPaymentConfirmation);
