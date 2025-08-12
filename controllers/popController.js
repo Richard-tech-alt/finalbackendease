@@ -1,7 +1,7 @@
 import Otp from "../models/PopOtp";
 import nodemailer from "nodemailer";
 
-// Send OTP
+// Send OTPs
 export const sendOtpPop = async (req, res) => {
   try {
     const { email } = req.body;
