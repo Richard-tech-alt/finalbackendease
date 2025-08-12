@@ -45,30 +45,96 @@
 // };
 
 
+import Otp from "../models/Popotp.js";
+import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
 
-// export const verifyOtpPop = async (req, res) => {
-//   try {
-//     const { email, otp } = req.body;
-//     if (!email || !otp) return res.status(400).json({ success: false, message: "Email and OTP are required" });
+export const sendOtpPop = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email is required" });
 
-//     const otpRecord = await Otp.findOne({ email });
-//     if (!otpRecord) return res.status(400).json({ success: false, message: "OTP not found" });
+    // ✅ Check if OTP already exists for email
+    let otpRecord = await Otp.findOne({ email });
 
-//     if (otpRecord.otp !== otp) {
-//       return res.status(400).json({ success: false, message: "Invalid OTP" });
-//     }
+    // Generate OTP
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 min
 
-//     if (otpRecord.expiresAt < new Date()) {
-//       return res.status(400).json({ success: false, message: "OTP expired" });
-//     }
+    if (otpRecord) {
+      otpRecord.otp = otpCode;
+      otpRecord.expiresAt = expiresAt;
+      await otpRecord.save();
+    } else {
+      otpRecord = new Otp({
+        email,
+        otp: otpCode,
+        expiresAt,
+      });
+      await otpRecord.save();
+    }
 
-//     // ✅ OTP is valid — delete it from DB
-//     await Otp.deleteOne({ email });
+    // ✅ Send email via Nodemailer
+    const transporter = nodemailer.createTransport({
+      host: "smtp.hostinger.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: "info@easewithdraw.com",
+        pass: "Guru@Guru123",
+      },
+    });
 
-//     return res.json({ success: true, message: "Email verified successfully" });
+    await transporter.sendMail({
+      from: "info@easewithdraw.com",
+      to: email,
+      subject: "EaseWithdraw Email Verification",
+      text: `Your OTP is ${otpCode}. It will expire in 5 minutes.`,
+    });
 
-//   } catch (error) {
-//     console.error("Verify OTP error:", error);
-//     res.status(500).json({ success: false, message: "OTP verification failed" });
-//   }
-// };
+    // ✅ Generate a temporary token (optional)
+    const token = jwt.sign(
+      { email },
+      "your_jwt_secret",
+      { expiresIn: "10m" }
+    );
+
+    return res.status(200).json({
+      message: "OTP sent successfully",
+      token,
+    });
+
+  } catch (error) {
+    console.error("sendOtpPop Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
+export const verifyOtpPop = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) return res.status(400).json({ success: false, message: "Email and OTP are required" });
+
+    const otpRecord = await Otp.findOne({ email });
+    if (!otpRecord) return res.status(400).json({ success: false, message: "OTP not found" });
+
+    if (otpRecord.otp !== otp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+
+    if (otpRecord.expiresAt < new Date()) {
+      return res.status(400).json({ success: false, message: "OTP expired" });
+    }
+
+    // ✅ OTP is valid — delete it from DB
+    await Otp.deleteOne({ email });
+
+    return res.json({ success: true, message: "Email verified successfully" });
+
+  } catch (error) {
+    console.error("Verify OTP error:", error);
+    res.status(500).json({ success: false, message: "OTP verification failed" });
+  }
+};
