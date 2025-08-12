@@ -1,4 +1,4 @@
-import Otp from "../models/PopOtp";
+import Otp from "../models/Popotp"
 import nodemailer from "nodemailer";
 
 // Send OTPs
