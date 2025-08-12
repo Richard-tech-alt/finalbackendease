@@ -18,18 +18,14 @@ export const sendOtpPop = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    const smtpHost = "smtp.hostinger.com";
-    const smtpPort = 587; // SSL
-    const smtpUser = "info@easewithdraw.com";
-    const smtpPass = "Guru@Guru123";
     
     const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
+      host: smtp.hostinger.com,
+      port: 587,
       secure: false, // true for SSL (465), false for TLS (587)
       auth: {
-        user: smtpUser,
-        pass: smtpPass
+        user: "info@easewithdraw.com",
+        pass: "Guru@Guru123"
       }
     });
 

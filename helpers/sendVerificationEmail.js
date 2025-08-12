@@ -801,6 +801,6 @@ async function sendVerificationEmail(toEmail, subject, otp) {
     console.error("Error sending email:", error);
   }
 }
-
+  
 // Example usage:
 module.exports = { sendVerificationEmail };
