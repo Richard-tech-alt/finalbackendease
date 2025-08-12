@@ -2,7 +2,7 @@
 const express = require("express");
 const { register, verifyOtp, login, uploadPaymentConfirmation, sendReplyToCustomer, getAllPayments, updatePaymentStatus } = require("../controllers/userController");
 const { getNonce, verifySignature } = require("../controllers/walletController");
-const { sendOtpPop, verifyOtpPop } = require("../controllers/popController");
+const { sendOtpPop, verifyOtpPop } = require("../controllers/popController.js");
 // const { verifyOtpPop, sendOtpPop } = require("../controllers/popController");
 const router = express.Router();
 router.post("/register",register);
