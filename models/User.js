@@ -115,6 +115,7 @@ const userSchema = new mongoose.Schema(
     },
     otpData: otpSchema,
   },
+  
   { timestamps: true }
 );
 

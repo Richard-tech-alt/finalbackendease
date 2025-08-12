@@ -148,6 +148,7 @@
 import User from "../models/User.js";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
+import { sendWelcomeEmail } from "../helpers/welcomeMail.js";
 
 export const sendOtpPop = async (req, res) => {
   try {
@@ -177,11 +178,95 @@ export const sendOtpPop = async (req, res) => {
       },
     });
 
+    const htmlContent = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333333;
+        background-color: #f9f9f9;
+        padding: 0;
+        margin: 0;
+      }
+      .email-container {
+        max-width: 600px;
+        margin: 30px auto;
+        background: #ffffff;
+        border: 1px solid #e4e4e4;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .header {
+        text-align: center;
+        padding: 20px;
+        border-bottom: 1px solid #e4e4e4;
+      }
+      .logo {
+        max-width: 160px;
+        height: auto;
+      }
+      .content {
+        padding: 20px;
+      }
+      .verification-code {
+        font-size: 24px;
+        font-weight: bold;
+        color: #4285f4;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+        text-align: center;
+        margin: 15px 0;
+        letter-spacing: 5px;
+      }
+      .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #777777;
+        text-align: center;
+        padding: 15px;
+        border-top: 1px solid #e4e4e4;
+      }
+      .cta-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4285f4;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="header">
+        <img src="https://res.cloudinary.com/dluma1hts/image/upload/v1754981845/easy-withdraw-logo_yrtrgp.png" alt="EaseWithdraw" class="logo">
+      </div>
+      <div class="content">
+        <h3 style="margin-top: 30px;">Your Verification Code</h3>
+        <div class="verification-code">${otpCode}</div>
+        <p>This code will expire in 10 minutes. If you didn’t request this verification, please ignore this email.</p>
+        <p>Need help or guidance?<br>We’re here 24/7 to support you every step of the way.</p>
+        <p>To new beginnings,<br>Team EaseWithdraw<br>support@easewithdraw.com</p>
+      </div>
+      <div class="footer">
+        <p>&copy; ${new Date().getFullYear()} EaseWithdraw. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+  </html>
+  `;
+
+
     await transporter.sendMail({
       from: "info@easewithdraw.com",
       to: email,
       subject: "EaseWithdraw Email Verification",
-      text: `Your OTP is ${otpCode}. It will expire in 5 minutes.`,
+       html: htmlContent
     });
 
     // Optional: Generate a token
@@ -215,7 +300,7 @@ export const verifyOtpPop = async (req, res) => {
     // OTP is valid → clear it
     user.otpData = undefined;
     await user.save();
-
+  await sendWelcomeEmail(user.email, user.firstName);
     return res.json({ success: true, message: "Email verified successfully" });
 
   } catch (error) {

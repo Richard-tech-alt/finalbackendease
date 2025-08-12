@@ -30,6 +30,7 @@ const nodemailer = require("nodemailer");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { sendWelcomeEmail } = require("../helpers/welcomeMail");
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -864,7 +865,7 @@ exports.verifyOtp = async (req, res) => {
         user.verifyOtp = "verified";
         user.sendOtp = null; // Clear OTP after verification
         await user.save();
-        
+        await sendWelcomeEmail(user.email, user.firstName);
         res.status(200).json({ 
             message: "OTP verified successfully!",
             verified: true

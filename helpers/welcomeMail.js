@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 // SMTP config
 const smtpHost = 'smtp.hostinger.com';
-const smtpPort = 465;
+const smtpPort = 587;
 const smtpUser = 'info@easewithdraw.com';
 const smtpPass = 'Guru@Guru123';
 
@@ -10,7 +10,7 @@ const smtpPass = 'Guru@Guru123';
 const transporter = nodemailer.createTransport({
     host: smtpHost,
     port: smtpPort,
-    secure: true,
+    secure: false,
     auth: {
         user: smtpUser,
         pass: smtpPass
