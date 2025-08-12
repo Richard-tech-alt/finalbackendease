@@ -63,8 +63,8 @@ const upload = multer({
 
 const transporter = nodemailer.createTransport({
     host: "smtp.hostinger.com",
-    port: "465",
-    secure: true, // true for port 465
+    port: "587",
+    secure: true, // true for port 587
     auth: {
       user: "info@easewithdraw.com",
       pass: "Guru@Guru123",
