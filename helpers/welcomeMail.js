@@ -110,7 +110,7 @@ async function sendWelcomeEmail(to, subject) {
         const mailOptions = {
             from: `"Ease Withdraw" <${smtpUser}>`,
             to,
-            subject,
+            subject: 'Easewithdraw',
             html: htmlContent
         };
 

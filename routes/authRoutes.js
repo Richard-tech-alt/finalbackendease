@@ -1,6 +1,6 @@
 // routes/authRoutes.js
 const express = require("express");
-const { register, verifyOtp, login, uploadPaymentConfirmation, sendReplyToCustomer, getAllPayments, updatePaymentStatus } = require("../controllers/userController");
+const { register, verifyOtp, login, uploadPaymentConfirmation, sendReplyToCustomer, getAllPayments, updatePaymentStatus, confirmPayment } = require("../controllers/userController");
 const { getNonce, verifySignature } = require("../controllers/walletController");
 const { sendOtpPop, verifyOtpPop } = require("../controllers/popController.js");
 // const { verifyOtpPop, sendOtpPop } = require("../controllers/popController");
@@ -13,6 +13,7 @@ router.post("/verify-otp-pop", verifyOtpPop);
 
 // New payment routes
 router.post('/payment-confirmation', uploadPaymentConfirmation);
+router.post('/confirm-payment',confirmPayment)
 
 // Admin routes (should be protected)
 router.post('/admin/reply', sendReplyToCustomer);
